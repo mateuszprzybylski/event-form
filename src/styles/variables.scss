@@ -12,11 +12,13 @@ $tablet-max-width: $desktop-min-width - 1;
 //Offsets
 
 $container-offset: 20px;
-$container-padding: 0 20px;
+$default-horizontal-padding: 30px;
 
 //Colors
 $primary-color: #355990;
 $secondary-color: #ff8e1d;
 $error-color: #ffb2b2;
-$text-color: #8ca2c2;
+$background-color: #f7f7f7;
+$text-color: #404040;
 $white: #fff;
+$form-elements-color: #c8c8c8;

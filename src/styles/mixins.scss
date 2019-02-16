@@ -1,5 +1,7 @@
 @import './variables.scss';
 
+//RWD
+
 @mixin mobile {
   @media (min-width: $mobile-min-width) and (max-width: $mobile-max-width) {
     @content;
@@ -21,5 +23,27 @@
 @mixin desktop {
   @media (min-width: #{$desktop-min-width}) {
     @content;
+  }
+}
+
+//Buttons
+
+@mixin btn($background-color, $text-color) {
+  background-color: $background-color;
+  border: 0;
+  border-radius: 3px;
+  color: $text-color;
+  cursor: pointer;
+  font-size: .7rem;
+  font-weight: 700;
+  padding: 15px 20px;
+  text-transform: uppercase;
+
+  &:hover {
+    background-color: darken($background-color, 5%);
+  }
+
+  &:active {
+    background-color: darken($background-color, 10%);
   }
 }

@@ -5,10 +5,10 @@ const AppHeader = ({header}) => {
   return (
     <header className="app-header">
       <div className="container">
-        {header}
+        <h1>{header}</h1>
       </div>
     </header>
-  )
+  );
 }
 
 export default AppHeader;

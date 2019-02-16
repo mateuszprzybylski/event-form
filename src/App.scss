@@ -1,0 +1,9 @@
+@import '../src/styles/utils.scss';
+@import '../src/styles/variables.scss';
+
+.app {
+    .app__body {
+        background-color: $background-color;
+        padding: 20px 0;
+    }
+}

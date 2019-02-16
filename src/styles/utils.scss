@@ -4,7 +4,6 @@
 .container {
     box-sizing: border-box;
     margin: 0 auto;
-    padding: $container-padding;
 
     @include mobile {
         width: $mobile-min-width - $container-offset;
@@ -21,4 +20,12 @@
     @include desktop {
         width: $desktop-min-width - $container-offset;
     }
+}
+
+.btn-primary {
+    @include btn($primary-color, $white);
+}
+
+.btn-secondary {
+    @include btn($secondary-color, $white);
 }
