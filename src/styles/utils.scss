@@ -18,7 +18,7 @@
     }
 
     @include desktop {
-        width: $desktop-min-width - $container-offset;
+        width: $tablet-min-width - $container-offset;
     }
 }
 
@@ -28,4 +28,8 @@
 
 .btn-secondary {
     @include btn($secondary-color, $white);
+}
+
+.f-rigth {
+    float: right;
 }

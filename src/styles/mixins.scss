@@ -26,6 +26,12 @@
   }
 }
 
+@mixin mobile-md-and-less {
+  @media (max-width: $mobile-md-max-width) {
+    @content;
+  }
+}
+
 //Buttons
 
 @mixin btn($background-color, $text-color) {
