@@ -1,9 +1,9 @@
 import moment from 'moment';
 
 const API = {
-    categories: 'http://www.mocky.io/v2/5bcdd3942f00002c00c855ba',
-    coordinators: 'http://www.mocky.io/v2/5bcdd7992f00006300c855d5',
-    titleValidation: 'http://www.mocky.io/v2/5bcdd8732f00007300c855da'
+    categories: 'https://www.mocky.io/v2/5bcdd3942f00002c00c855ba',
+    coordinators: 'https://www.mocky.io/v2/5bcdd7992f00006300c855d5',
+    titleValidation: 'https://www.mocky.io/v2/5bcdd8732f00007300c855da'
 }
 
 export function parseOutput(input) {
