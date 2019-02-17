@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import FormSection from '../FormSection/FormSection';
 import './EventForm.scss';
 import moment from 'moment';
-import { parseOutput, AM_PM_VALUES, PAID_EVENT_VALUES } from './FormHelper';
+import { parseOutput, AM_PM_VALUES, PAID_EVENT_VALUES, getCategories, getCoordinators, getLogedInUserId, validateTitle } from './FormHelper';
 
 export default class EventForm extends Component {
   constructor() {
@@ -16,13 +16,17 @@ export default class EventForm extends Component {
         paid_event: PAID_EVENT_VALUES.FREE,
         fee: '',
         reward: '',
-        responsible: '1',
+        responsible: '',
         email: '',
         date: '',
         time: '',
         ampm: AM_PM_VALUES.AM,
         duration: ''
-      }
+      },
+      categories: [],
+      coordinators: [],
+      logedInUserId: null,
+      titleAlreadyInUse: false
     }
 
     this.formSetup = {
@@ -43,19 +47,57 @@ export default class EventForm extends Component {
       }
     }
   }
-  
+
+  componentDidMount = () => {
+    getCategories()
+      .then(categories => {
+        this.setState({categories});
+      });
+
+    getCoordinators()
+      .then(coordinators => {
+        this.setState({coordinators});
+      });
+
+    const logedInUserId = getLogedInUserId();
+
+    this.setState(prevState => ({
+      logedInUserId,
+      form: {
+        ...prevState.form,
+        responsible: logedInUserId.toString()
+      }
+    })); 
+  }
+
   handleSubmit = (event) => {
     console.log('Output: ', parseOutput(this.state.form));
     event.preventDefault();
+  }
+
+  validateTitle = (event) => {
+    const title = event.target.value;
+
+    validateTitle(title)
+      .then(isValid => {
+        this.setState({
+          titleAlreadyInUse: !isValid
+        });
+      });
+
+    this.handleInputChange(event);
   }
 
   handleInputChange = (event) => {
     const value = event.target.value;
     const inputName = event.target.name;
     
-    this.setState({
-      [inputName]: value
-    });
+    this.setState(prevState => ({
+      form: {
+        ...prevState.form,
+        [inputName]: value
+      }
+    }));
   }
 
   render() {
@@ -72,11 +114,14 @@ export default class EventForm extends Component {
                   type="text" 
                   value={this.state.form.title}
                   placeholder="Make it short and clear"
-                  onChange={this.handleInputChange}
+                  onChange={this.validateTitle}
                   required/>
                 <div className="form-control__error">
                   Title cannot be empty
                 </div>
+                { this.state.titleAlreadyInUse ? <div>
+                  Title already in use
+                </div> : null }
               </div>
            </div>
 
@@ -112,9 +157,11 @@ export default class EventForm extends Component {
                   name="category"
                   id="category">
                   <option value="">Select category</option>
-                  <option value="1">Skils</option>
-                  <option value="2">Interests</option>
-                  <option value="3">Locations</option>
+                  { this.state.categories.map(
+                    category => {
+                      return <option key={category.id} value={category.id}>{category.name}</option>
+                    }
+                  )}                 
                 </select>
                 <div className="form-control__hint">
                   Describes topis and people who should be intrested in this event
@@ -142,7 +189,7 @@ export default class EventForm extends Component {
                 value={PAID_EVENT_VALUES.PAID}/>
               <span>Paid event</span>
             </div>
-            { this.state.paid_event === PAID_EVENT_VALUES.PAID ? 
+            { this.state.form.paid_event === PAID_EVENT_VALUES.PAID ? 
               <div className="form-control form-control-inline fee-control">
                 <input 
                   type="number" 
@@ -184,8 +231,18 @@ export default class EventForm extends Component {
                   onChange={this.handleInputChange}
                   name="responsible"
                   id="responsible">
-                  <option value="1">Mr Beans</option>
-                  <option value="2">James Bond</option>
+                  { this.state.coordinators.map(
+                    coordinator => {
+                      return (
+                        <option 
+                          key={coordinator.id} 
+                          value={coordinator.id}>
+                          { this.state.logedInUserId === coordinator.id ? 'Me - ' : null}
+                          {coordinator.name} {coordinator.lastname}
+                        </option>
+                      );
+                    }
+                  )}
                 </select>
                 <div className="form-control__error">
                   Select responsible person
