@@ -11,6 +11,19 @@
     }
 }
 
+form.was-validated .form-control,
+.form-control.has-errors {
+    input:invalid, 
+    textarea:invalid, 
+    select:invalid {
+        border: 1px solid $error-color;
+    }
+
+  .form-control__error {
+    display: block;
+  }
+}
+
 .form-group {
     display: flex;
     align-items: baseline;
@@ -93,22 +106,10 @@
         resize: none;
     }
 
-    &.has-error {
+    &.has-errors {
         label {
             color: $error-color;
         }
-    }
-
-    .form-control.has-error {
-        input, 
-        textarea, 
-        select {
-            border: 1px solid $error-color;
-        }
-
-      .form-control__error {
-        display: block;
-      }
     }
 
     .form-control__error {
@@ -137,12 +138,12 @@
         }
     }
 
-    input.short {
+    .short input {
         width: 70px;
     }
 
-    input.medium {
-        width: 160px;
+    .medium input {
+        width: 130px;
     }
 
     @include mobile-md-and-less {
@@ -194,8 +195,7 @@
 
     @include mobile {
         .form-control.fee-control,
-        .form-control.time-control,
-        &.reward-group .form-control__description {
+        .form-control.time-control {
             margin-left: 0;
             margin-top: 5px;
         }

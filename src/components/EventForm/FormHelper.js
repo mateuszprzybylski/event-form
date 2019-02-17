@@ -8,7 +8,8 @@ const API = {
 
 export function parseOutput(input) {
     const secondsInHour = 60*60;
-    const dateTimeValue = input.date + ' ' + input.time + ' ' + input.ampm;
+    const dateTimeValue = input.date + ' ' + input.time + ' ' + input.meridiem;
+
     const date = moment(dateTimeValue).format('YYYY-MM-DDTHH:mm');
 
     const output = {
@@ -34,16 +35,26 @@ export function getCategories() {
         .then(response => response.json());
 }
 
+const parseCoordinators = (response) => {
+    return response.map(item => {
+      return {
+        name: [item.name, item.lastname].join(' '),
+        id: item.id
+      }
+    });
+  }
+
 export function getCoordinators() {
     return fetch(API.coordinators)
-        .then(response => response.json());
+        .then(response => response.json())
+        .then(json => parseCoordinators(json));
 }
 
-export function validateTitle(title) {
+export function isTitleInUse(title) {
     return fetch(API.titleValidation)
         .then(response => response.json())
         .then(events => events.map(event => event.title))
-        .then(titles => !titles.includes(title));
+        .then(titles => titles.includes(title));
 }
 
 export function getLogedInUserId() {
@@ -55,7 +66,7 @@ export const PAID_EVENT_VALUES = {
     PAID: 'PAID'
 }
 
-export const AM_PM_VALUES = {
+export const MERIDIEM_VALUES = {
     AM: 'AM',
     PM: 'PM'
 }

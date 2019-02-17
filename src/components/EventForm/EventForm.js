@@ -2,7 +2,13 @@ import React, { Component } from 'react';
 import FormSection from '../FormSection/FormSection';
 import './EventForm.scss';
 import moment from 'moment';
-import { parseOutput, AM_PM_VALUES, PAID_EVENT_VALUES, getCategories, getCoordinators, getLogedInUserId, validateTitle } from './FormHelper';
+import { parseOutput, MERIDIEM_VALUES, PAID_EVENT_VALUES, getCategories, getCoordinators, getLogedInUserId, isTitleInUse } from './FormHelper';
+import Input from '../Input/Input';
+import { ERROR_MESSAGES } from './ErrorMessages';
+import TextArea from '../TextArea/TextArea';
+import DescribedInput from '../DescribedInput/DescribedInput';
+import Select from '../Select/Select';
+import RadioButton from '../RadioButton/RadioButton';
 
 export default class EventForm extends Component {
   constructor() {
@@ -20,13 +26,13 @@ export default class EventForm extends Component {
         email: '',
         date: '',
         time: '',
-        ampm: AM_PM_VALUES.AM,
+        meridiem: MERIDIEM_VALUES.AM,
         duration: ''
       },
       categories: [],
       coordinators: [],
       logedInUserId: null,
-      titleAlreadyInUse: false
+      wasValidated: false
     }
 
     this.formSetup = {
@@ -46,6 +52,8 @@ export default class EventForm extends Component {
         min: 0
       }
     }
+
+    this.form = React.createRef();
   }
 
   componentDidMount = () => {
@@ -55,6 +63,7 @@ export default class EventForm extends Component {
       });
 
     getCoordinators()
+      .then(coordinators => this.selectLogedInCoordinator(coordinators))
       .then(coordinators => {
         this.setState({coordinators});
       });
@@ -70,22 +79,30 @@ export default class EventForm extends Component {
     })); 
   }
 
+  selectLogedInCoordinator(coordinators) {
+    return coordinators.map(coordinator => {
+      if(coordinator.id === this.state.logedInUserId) {
+        coordinator.name = "Me - " + coordinator.name;
+      }
+
+      return coordinator;
+    });
+  }
+
   handleSubmit = (event) => {
-    console.log('Output: ', parseOutput(this.state.form));
+    if(this.form.current.reportValidity()) {
+      console.log('Output: ', parseOutput(this.state.form));
+    }
+
+    this.setState({
+      wasValidated: true
+    });
+
     event.preventDefault();
   }
 
   validateTitle = (event) => {
-    const title = event.target.value;
-
-    validateTitle(title)
-      .then(isValid => {
-        this.setState({
-          titleAlreadyInUse: !isValid
-        });
-      });
-
-    this.handleInputChange(event);
+    return isTitleInUse(event.target.value);
   }
 
   handleInputChange = (event) => {
@@ -103,164 +120,118 @@ export default class EventForm extends Component {
   render() {
     return (
       <div className="event-form">
-        <form onSubmit={this.handleSubmit} noValidate>
+        <form ref={this.form} onSubmit={this.handleSubmit} noValidate className={this.state.wasValidated ? "was-validated" : ""}>
           <FormSection header="About">
            <div className="form-group required">
-              <label htmlFor="title">TITLE</label>
-              <div className="form-control">
-                <input
-                  id="title"
-                  name="title"
-                  type="text" 
-                  value={this.state.form.title}
-                  placeholder="Make it short and clear"
-                  onChange={this.validateTitle}
-                  required/>
-                <div className="form-control__error">
-                  Title cannot be empty
-                </div>
-                { this.state.titleAlreadyInUse ? <div>
-                  Title already in use
-                </div> : null }
-              </div>
+            <label htmlFor="title">TITLE</label>
+            <Input
+              id="title" 
+              name="title"
+              value={this.state.form.title}
+              onChange={this.handleInputChange}
+              type="text"
+              placeholder="Make it short and clear"
+              customValidation={this.validateTitle}
+              errorMessages={ERROR_MESSAGES.title}
+              required={true}/>
            </div>
 
            <div className="form-group required">
-              <label htmlFor="description">DESCRIPTION</label>
-              <div className="form-control">
-                <textarea
-                  rows="4"
-                  maxLength={this.formSetup.description.maxLength}
-                  id="description" 
-                  name="description"
-                  type="text" 
-                  value={this.state.form.description}
-                  placeholder="Write about your event, be creative"
-                  onChange={this.handleInputChange}
-                  required/>
-                <div className="form-control__hint">
-                  Max length {this.formSetup.description.maxLength} characters
-                  <span className="f-rigth">{this.state.form.description.length}/{this.formSetup.description.maxLength}</span>
-                </div>
-                <div className="form-control__error">
-                  Description cannot be empty
-                </div>
-              </div>
+            <label htmlFor="description">DESCRIPTION</label>
+            <TextArea
+              rows="4"
+              maxLength={this.formSetup.description.maxLength}
+              id="description" 
+              name="description"
+              hint="Max length {this.formSetup.description.maxLength} characters"
+              type="text" 
+              value={this.state.form.description}
+              placeholder="Write about your event, be creative"
+              errorMessages={ERROR_MESSAGES.description}
+              onChange={this.handleInputChange}
+              required={true}/>
            </div>
 
            <div className="form-group">
-              <label htmlFor="category">CATEGORY</label>
-              <div className="form-control">
-                <select
-                  value={this.state.form.category}
-                  onChange={this.handleInputChange}
-                  name="category"
-                  id="category">
-                  <option value="">Select category</option>
-                  { this.state.categories.map(
-                    category => {
-                      return <option key={category.id} value={category.id}>{category.name}</option>
-                    }
-                  )}                 
-                </select>
-                <div className="form-control__hint">
-                  Describes topis and people who should be intrested in this event
-                </div>
-              </div>
+            <label htmlFor="category">CATEGORY</label>
+            <Select
+              value={this.state.form.category}
+              onChange={this.handleInputChange}
+              name="category"
+              id="category"
+              options={this.state.categories}
+              placeholder="Select category"
+              hint="Describes topis and people who should be intrested in this event"/>
            </div>
 
            <div className="form-group form-group-inline">
             <label>PAYMENT</label>
-            <div className="form-control form-control-inline">
-              <input 
-                type="radio" 
-                name="paid_event" 
-                value={PAID_EVENT_VALUES.FREE}
-                onChange={this.handleInputChange}
-                checked={this.state.form.paid_event === PAID_EVENT_VALUES.FREE}/>
-              <span>Free event</span>
-            </div>
-            <div className="form-control form-control-inline">
-              <input 
-                type="radio" 
-                name="paid_event" 
-                onChange={this.handleInputChange}
-                checked={this.state.form.paid_event === PAID_EVENT_VALUES.PAID}
-                value={PAID_EVENT_VALUES.PAID}/>
-              <span>Paid event</span>
-            </div>
-            { this.state.form.paid_event === PAID_EVENT_VALUES.PAID ? 
-              <div className="form-control form-control-inline fee-control">
-                <input 
-                  type="number" 
-                  className="short" 
-                  name="fee" 
-                  value={this.state.form.fee}
-                  onChange={this.handleInputChange}
-                  min={this.formSetup.fee.min}
-                  placeholder="Fee"/>
-                <span className="form-control__description">$</span>
-              </div>
+            <RadioButton
+              type="radio" 
+              name="paid_event" 
+              onChange={this.handleInputChange}
+              checked={this.state.form.paid_event === PAID_EVENT_VALUES.FREE}
+              value={PAID_EVENT_VALUES.FREE}
+              label="Free event"/>
+            <RadioButton
+              type="radio" 
+              name="paid_event" 
+              onChange={this.handleInputChange}
+              checked={this.state.form.paid_event === PAID_EVENT_VALUES.PAID}
+              value={PAID_EVENT_VALUES.PAID}
+              label="Paid event"/>
+            {this.state.form.paid_event === PAID_EVENT_VALUES.PAID ? 
+            <DescribedInput
+              type="number" 
+              className="fee-control short" 
+              name="fee" 
+              value={this.state.form.fee}
+              onChange={this.handleInputChange}
+              min={this.formSetup.fee.min}
+              placeholder="Fee"
+              description="$"
+              novalidate={true}/>
             : null}
           </div>
 
-          <div className="form-group form-group-inline reward-group">
+          <div className="form-group">
             <label htmlFor="reward">REWARD</label>
-            <div className="form-control form-control-inline">
-              <input
+              <DescribedInput
+                type="number" 
+                className="short" 
                 id="reward" 
                 name="reward"
-                type="number" 
                 value={this.state.form.reward}
-                className="short" 
                 onChange={this.handleInputChange}
                 min={this.formSetup.reward.min}
-                placeholder="Number"/>
-            </div>
-            <span className="form-control__description">reward points for attendance</span>
+                placeholder="Number"
+                description="reward points for attendance"
+                novalidate={true}/>
           </div>
 
           </FormSection>
           <FormSection header="Coordinator">
             
            <div className="form-group required">
-              <label htmlFor="responsible">RESPONSIBLE</label>
-              <div className="form-control">
-                <select
-                  value={this.state.form.responsible}
-                  onChange={this.handleInputChange}
-                  name="responsible"
-                  id="responsible">
-                  { this.state.coordinators.map(
-                    coordinator => {
-                      return (
-                        <option 
-                          key={coordinator.id} 
-                          value={coordinator.id}>
-                          { this.state.logedInUserId === coordinator.id ? 'Me - ' : null}
-                          {coordinator.name} {coordinator.lastname}
-                        </option>
-                      );
-                    }
-                  )}
-                </select>
-                <div className="form-control__error">
-                  Select responsible person
-                </div>
-              </div>
+            <label htmlFor="responsible">RESPONSIBLE</label>
+            <Select
+              value={this.state.form.responsible}
+              onChange={this.handleInputChange}
+              name="responsible"
+              id="responsible"
+              options={this.state.coordinators}/>
            </div>
 
            <div className="form-group">
-              <label htmlFor="title">EMAIL</label>
-              <div className="form-control">
-                <input
-                  id="email" 
-                  name="email"
-                  value={this.state.form.email}
-                  onChange={this.handleInputChange}
-                  type="email" 
-                  placeholder="Email"/>
-              </div>
+            <label htmlFor="email">EMAIL</label>
+            <Input
+              id="email" 
+              name="email"
+              value={this.state.form.email}
+              onChange={this.handleInputChange}
+              type="email" 
+              placeholder="Email"
+              errorMessages={ERROR_MESSAGES.email}/>
            </div>
 
           </FormSection>
@@ -268,63 +239,59 @@ export default class EventForm extends Component {
 
             <div className="form-group required form-group-inline">
               <label>STARTS ON</label>
-              <div className="form-control form-control-inline">
-                <input
-                  name="date"
-                  onChange={this.handleInputChange}
-                  type="date"
-                  min={this.formSetup.date.min}
-                  className="medium" 
-                  placeholder="dd/mm/yyyy"
-                  required/>
-                <div className="form-control__error">
-                  Starts on cannot be empty
-                </div>
-              </div>
-              <span className="form-control__description">at</span>
-              <div className="form-control form-control-inline time-control">
-                <input
-                  name="time"
-                  onChange={this.handleInputChange}
-                  type="time" 
-                  className="short" 
-                  placeholder="--:--"
-                  required/>
-              </div>
-              <div className="form-control form-control-inline">
-                <input 
-                  type="radio" 
-                  onChange={this.handleInputChange}
-                  checked={this.state.form.ampm === AM_PM_VALUES.AM}
-                  name="ampm" 
-                  value={AM_PM_VALUES.AM}/><span>AM</span>
-              </div>
-              <div className="form-control form-control-inline">
-                <input 
-                  type="radio" 
-                  onChange={this.handleInputChange}
-                  checked={this.state.form.ampm === AM_PM_VALUES.PM}
-                  name="ampm" 
-                  value={AM_PM_VALUES.PM}/><span>PM</span>
-              </div>
+              <DescribedInput
+                id="date" 
+                name="date"
+                onChange={this.handleInputChange}
+                type="date"
+                className="medium"
+                min={this.formSetup.date.min}
+                placeholder="dd/mm/yyyy"
+                description="at"
+                errorMessages={ERROR_MESSAGES.date}
+                required={true}/>
+
+              <DescribedInput
+                id="time" 
+                name="time"
+                onChange={this.handleInputChange}
+                type="time"
+                className="time-control"
+                placeholder="--:--"
+                errorMessages={ERROR_MESSAGES.time}
+                required={true}/>
+
+              <RadioButton
+                type="radio" 
+                onChange={this.handleInputChange}
+                checked={this.state.form.meridiem === MERIDIEM_VALUES.AM}
+                name="meridiem"
+                value={MERIDIEM_VALUES.AM}
+                label="AM"/>
+              <RadioButton
+                type="radio" 
+                onChange={this.handleInputChange}
+                checked={this.state.form.meridiem === MERIDIEM_VALUES.PM}
+                name="meridiem"
+                value={MERIDIEM_VALUES.PM}
+                label="PM"/>
             </div>
             
             <div className="form-group form-group-inline">
               <label htmlFor="duration">DURATION</label>
-              <div className="form-control form-control-inline">
-                <input
-                  id="duration" 
-                  name="duration"
-                  onChange={this.handleInputChange}
-                  type="number" 
-                  value={this.state.form.duration}
-                  className="short"
-                  min={this.formSetup.reward.min}
-                  placeholder="Number"/>
-              </div>
-              <span className="form-control__description">hours</span>
+              <DescribedInput
+                id="duration" 
+                name="duration"
+                onChange={this.handleInputChange}
+                type="number" 
+                value={this.state.form.duration}
+                className="short"
+                min={this.formSetup.reward.min}
+                placeholder="Number"
+                description="hours"
+                novalidate={true}/>
             </div>
-            
+          
           </FormSection>
           <button 
             type="submit"
