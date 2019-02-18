@@ -256,8 +256,10 @@ export default class EventForm extends Component {
                 id="time" 
                 name="time"
                 onChange={this.handleInputChange}
-                type="time"
-                className="time-control"
+                type="text"
+                max="5"
+                pattern="^(1[0-2]|0?[1-9]):[0-5][0-9]$"
+                className="time-control short"
                 placeholder="--:--"
                 errorMessages={ERROR_MESSAGES.time}
                 required={true}/>

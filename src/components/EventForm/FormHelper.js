@@ -8,9 +8,6 @@ const API = {
 
 export function parseOutput(input) {
     const secondsInHour = 60*60;
-    const dateTimeValue = input.date + ' ' + input.time + ' ' + input.meridiem;
-
-    const date = moment(dateTimeValue).format('YYYY-MM-DDTHH:mm');
 
     const output = {
         title: input.title,
@@ -19,7 +16,7 @@ export function parseOutput(input) {
         paid_event: input.paid_event === PAID_EVENT_VALUES.FREE ? 0 :1,
         event_fee: Number(input.fee),
         reward: Number(input.reward),
-        date: date,
+        date: parseDateTime(input),
         duration: Number(input.duration) * secondsInHour,
         coordinator: {
             id: input.responsible,
@@ -28,6 +25,14 @@ export function parseOutput(input) {
     }
 
     return output;
+}
+
+function parseDateTime(input) {
+    const { date, time, meridiem } = input;
+    const dateTimeValue = date + ' ' + time + ' ' + meridiem;
+    const outputFormat = 'YYYY-MM-DDTHH:mm';
+
+    return moment(dateTimeValue, 'YYYY-MM-DD HH:mm am').format(outputFormat);
 }
 
 export function getCategories() {

@@ -9,6 +9,10 @@
         width: $mobile-min-width - $container-offset;
     }
 
+    @include mobile-sm {
+        width: $mobile-sm-min-width - $container-offset;
+    }
+    
     @include mobile-md {
         width: $mobile-md-min-width - $container-offset;
     }

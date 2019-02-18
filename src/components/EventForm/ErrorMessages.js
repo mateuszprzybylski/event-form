@@ -15,5 +15,6 @@ export const ERROR_MESSAGES = {
     },
     time: {
         valueMissing: 'Time cannot be empty',
+        patternMismatch: 'Time should have 12 hours format (HH:mm)'
     }
 }

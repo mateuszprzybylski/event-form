@@ -16,7 +16,7 @@ describe('FormSection ', () => {
 
     it('should contains children element', () => {
         const childrenElement = <div>children</div>;
-        const formSection = shallow(<Section>{childrenElement}</FormSection>);
+        const formSection = shallow(<Section>{childrenElement}</Section>);
 
         expect(formSection.containsMatchingElement(childrenElement)).toEqual(true);
     });

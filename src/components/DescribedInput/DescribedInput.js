@@ -16,7 +16,9 @@ export default class DescribedInput extends Input {
           <div className={this.getInputClasses()}>
              <input
                 ref={input => this.input = input}
+                pattern={this.props.pattern}
                 id={this.props.id} 
+                maxLength={this.props.max}
                 name={this.props.name}
                 min={this.props.min}
                 value={this.props.value}

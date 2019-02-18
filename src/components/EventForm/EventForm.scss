@@ -121,8 +121,8 @@ form.was-validated .form-control,
         padding: 2px 5px;
         border-radius: 2px;
         right: -10px;
-        top: 0;
-        transform: translate(100%, 40%);
+        top: 5px;
+        transform: translateX(100%);
         z-index: 1;
 
         &::before {
@@ -143,7 +143,7 @@ form.was-validated .form-control,
     }
 
     .medium input {
-        width: 130px;
+        width: 150px;
     }
 
     @include mobile-md-and-less {
@@ -179,10 +179,9 @@ form.was-validated .form-control,
             position: absolute;
             right: unset;
             transform: unset;
-            top: unset;
+            top: calc(100% + 7px);
             margin: 0;
             left: 0;
-            bottom: -23px;
             z-index: 1;
 
             &::before {

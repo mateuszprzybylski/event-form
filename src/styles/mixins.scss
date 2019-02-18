@@ -8,6 +8,12 @@
   }
 }
 
+@mixin mobile-sm {
+  @media (min-width: $mobile-sm-min-width) and (max-width: $mobile-sm-max-width) {
+    @content;
+  }
+}
+
 @mixin mobile-md {
   @media (min-width: $mobile-md-min-width) and (max-width: $mobile-md-max-width) {
     @content;

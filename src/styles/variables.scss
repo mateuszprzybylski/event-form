@@ -1,11 +1,13 @@
 //RWD
 
 $mobile-min-width: 320px;
+$mobile-sm-min-width: 420px;
 $mobile-md-min-width: 576px;
 $tablet-min-width: 768px;
 $desktop-min-width: 1024px;
 
-$mobile-max-width: $mobile-md-min-width - 1;
+$mobile-max-width: $mobile-sm-min-width - 1;
+$mobile-sm-max-width: $mobile-md-min-width - 1;
 $mobile-md-max-width: $tablet-min-width - 1;
 $tablet-max-width: $desktop-min-width - 1;
 
