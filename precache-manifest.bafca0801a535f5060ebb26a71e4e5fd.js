@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "53af75283180ecee13d1",
+    "revision": "622f8b043e6d57d72ee4",
     "url": "/event-form/static/css/main.c9cfd7dc.chunk.css"
   },
   {
-    "revision": "53af75283180ecee13d1",
-    "url": "/event-form/static/js/main.53af7528.chunk.js"
+    "revision": "622f8b043e6d57d72ee4",
+    "url": "/event-form/static/js/main.622f8b04.chunk.js"
   },
   {
     "revision": "cfe8308829148831bb88",
@@ -16,7 +16,7 @@ self.__precacheManifest = [
     "url": "/event-form/static/js/2.9d8c74a7.chunk.js"
   },
   {
-    "revision": "748150d7fd43a1203061640d8e8791e8",
+    "revision": "67f3057426d10c007524fb4db0cf3fbb",
     "url": "/event-form/index.html"
   }
 ];
