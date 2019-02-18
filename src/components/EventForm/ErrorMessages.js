@@ -6,6 +6,9 @@ export const ERROR_MESSAGES = {
   description: {
     valueMissing: "Description cannot be empty"
   },
+  fee: {
+    valueMissing: "Fee cannot be empty"
+  },
   email: {
     valueMissing: "Email cannot be empty",
     typeMismatch: "Wrong email address"

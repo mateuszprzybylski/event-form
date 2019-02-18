@@ -1,6 +1,6 @@
 import React from "react";
 import { shallow } from "enzyme";
-import Section from "./Section";
+import Section, { SECTION_TYPE } from "./Section";
 
 describe("FormSection ", () => {
   it("should renders without crashing", () => {
@@ -19,5 +19,13 @@ describe("FormSection ", () => {
     const formSection = shallow(<Section>{childrenElement}</Section>);
 
     expect(formSection.containsMatchingElement(childrenElement)).toEqual(true);
+  });
+
+  it("should contains children element", () => {
+    const formSection = shallow(
+      <Section type={SECTION_TYPE.SUCCESS}></Section>
+    );
+
+    expect(formSection.hasClass(SECTION_TYPE.SUCCESS)).toEqual(true);
   });
 });

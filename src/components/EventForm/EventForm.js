@@ -2,15 +2,8 @@ import React, { Component } from "react";
 import Section from "../Section/Section";
 import "./EventForm.scss";
 import moment from "moment";
-import {
-  parseOutput,
-  MERIDIEM_VALUES,
-  PAID_EVENT_VALUES,
-  getCategories,
-  getCoordinators,
-  getLogedInUserId,
-  isTitleInUse
-} from "./FormHelper";
+import * as FormHelper from "./FormHelper";
+import * as EventAPI from "./EventAPI";
 import Input from "../Input/Input";
 import { ERROR_MESSAGES } from "./ErrorMessages";
 import TextArea from "../TextArea/TextArea";
@@ -27,14 +20,14 @@ export default class EventForm extends Component {
         title: "",
         description: "",
         category: "",
-        paid_event: PAID_EVENT_VALUES.FREE,
+        paid_event: FormHelper.PAID_EVENT_VALUES.FREE,
         fee: "",
         reward: "",
         responsible: "",
         email: "",
         date: "",
         time: "",
-        meridiem: MERIDIEM_VALUES.AM,
+        meridiem: FormHelper.MERIDIEM_VALUES.AM,
         duration: ""
       },
       categories: [],
@@ -65,17 +58,18 @@ export default class EventForm extends Component {
   }
 
   componentDidMount = () => {
-    getCategories().then(categories => {
+    EventAPI.getCategories().then(categories => {
       this.setState({ categories });
     });
 
-    getCoordinators()
+    EventAPI.getCoordinators()
+      .then(json => FormHelper.parseCoordinators(json))
       .then(coordinators => this.selectLogedInCoordinator(coordinators))
       .then(coordinators => {
         this.setState({ coordinators });
       });
 
-    const logedInUserId = getLogedInUserId();
+    const logedInUserId = EventAPI.getLogedInUserId();
 
     this.setState(prevState => ({
       logedInUserId,
@@ -87,19 +81,27 @@ export default class EventForm extends Component {
   };
 
   selectLogedInCoordinator(coordinators) {
-    return coordinators.map(coordinator => {
+    let modifiedCoordinatorList = [];
+    let logedInCoordinator;
+
+    coordinators.forEach(coordinator => {
       if (coordinator.id === this.state.logedInUserId) {
         coordinator.name = "Me - " + coordinator.name;
+        logedInCoordinator = coordinator;
+      } else {
+        modifiedCoordinatorList.push(coordinator);
       }
-
-      return coordinator;
     });
+
+    modifiedCoordinatorList.unshift(logedInCoordinator);
+
+    return modifiedCoordinatorList;
   }
 
   handleSubmit = event => {
     if (this.form.current.reportValidity()) {
       this.props.history.push("/success");
-      console.log("Output: ", parseOutput(this.state.form));
+      console.log("Output: ", FormHelper.parseFormData(this.state.form));
     }
 
     this.setState({
@@ -110,7 +112,7 @@ export default class EventForm extends Component {
   };
 
   validateTitle = title => {
-    return isTitleInUse(title);
+    return EventAPI.isTitleInUse(title);
   };
 
   handleInputChange = event => {
@@ -149,7 +151,6 @@ export default class EventForm extends Component {
                 required={true}
               />
             </div>
-
             <div className="form-group required">
               <label htmlFor="description">DESCRIPTION</label>
               <TextArea
@@ -166,7 +167,6 @@ export default class EventForm extends Component {
                 required={true}
               />
             </div>
-
             <div className="form-group">
               <label htmlFor="category">CATEGORY</label>
               <Select
@@ -179,26 +179,32 @@ export default class EventForm extends Component {
                 hint="Describes topis and people who should be intrested in this event"
               />
             </div>
-
             <div className="form-group form-group-inline">
               <label>PAYMENT</label>
               <RadioButton
                 type="radio"
                 name="paid_event"
                 onChange={this.handleInputChange}
-                checked={this.state.form.paid_event === PAID_EVENT_VALUES.FREE}
-                value={PAID_EVENT_VALUES.FREE}
+                checked={
+                  this.state.form.paid_event ===
+                  FormHelper.PAID_EVENT_VALUES.FREE
+                }
+                value={FormHelper.PAID_EVENT_VALUES.FREE}
                 label="Free event"
               />
               <RadioButton
                 type="radio"
                 name="paid_event"
                 onChange={this.handleInputChange}
-                checked={this.state.form.paid_event === PAID_EVENT_VALUES.PAID}
-                value={PAID_EVENT_VALUES.PAID}
+                checked={
+                  this.state.form.paid_event ===
+                  FormHelper.PAID_EVENT_VALUES.PAID
+                }
+                value={FormHelper.PAID_EVENT_VALUES.PAID}
                 label="Paid event"
               />
-              {this.state.form.paid_event === PAID_EVENT_VALUES.PAID ? (
+              {this.state.form.paid_event ===
+              FormHelper.PAID_EVENT_VALUES.PAID ? (
                 <DescribedInput
                   type="number"
                   className="fee-control short"
@@ -207,12 +213,13 @@ export default class EventForm extends Component {
                   onChange={this.handleInputChange}
                   min={this.formSetup.fee.min}
                   placeholder="Fee"
+                  errorMessages={ERROR_MESSAGES.fee}
                   description="$"
-                  novalidate={true}
+                  required={this.state.form.paid_event}
+                  novalidate={!this.state.form.paid_event}
                 />
               ) : null}
             </div>
-
             <div className="form-group">
               <label htmlFor="reward">REWARD</label>
               <DescribedInput
@@ -240,7 +247,6 @@ export default class EventForm extends Component {
                 options={this.state.coordinators}
               />
             </div>
-
             <div className="form-group">
               <label htmlFor="email">EMAIL</label>
               <Input
@@ -269,7 +275,6 @@ export default class EventForm extends Component {
                 errorMessages={ERROR_MESSAGES.date}
                 required={true}
               />
-
               <DescribedInput
                 id="time"
                 name="time"
@@ -282,25 +287,27 @@ export default class EventForm extends Component {
                 errorMessages={ERROR_MESSAGES.time}
                 required={true}
               />
-
               <RadioButton
                 type="radio"
                 onChange={this.handleInputChange}
-                checked={this.state.form.meridiem === MERIDIEM_VALUES.AM}
+                checked={
+                  this.state.form.meridiem === FormHelper.MERIDIEM_VALUES.AM
+                }
                 name="meridiem"
-                value={MERIDIEM_VALUES.AM}
+                value={FormHelper.MERIDIEM_VALUES.AM}
                 label="AM"
               />
               <RadioButton
                 type="radio"
                 onChange={this.handleInputChange}
-                checked={this.state.form.meridiem === MERIDIEM_VALUES.PM}
+                checked={
+                  this.state.form.meridiem === FormHelper.MERIDIEM_VALUES.PM
+                }
                 name="meridiem"
-                value={MERIDIEM_VALUES.PM}
+                value={FormHelper.MERIDIEM_VALUES.PM}
                 label="PM"
               />
             </div>
-
             <div className="form-group form-group-inline">
               <label htmlFor="duration">DURATION</label>
               <DescribedInput
