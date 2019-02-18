@@ -2,13 +2,12 @@ import React from "react";
 import Input from "../Input/Input";
 
 export default class DescribedInput extends Input {
-  getInputClasses = () => {
-    const classes = ["form-control form-control-inline"];
-    if (this.state.showErrors) classes.push("has-errors");
-    if (this.props.className) classes.push(this.props.className);
 
-    return classes.join(" ");
-  };
+  constructor(props) {
+    super(props);
+
+    this.defaultInputClass = "form-control form-control-inline";
+  }
 
   render() {
     return (

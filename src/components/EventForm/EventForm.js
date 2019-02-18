@@ -109,8 +109,8 @@ export default class EventForm extends Component {
     event.preventDefault();
   };
 
-  validateTitle = event => {
-    return isTitleInUse(event.target.value);
+  validateTitle = title => {
+    return isTitleInUse(title);
   };
 
   handleInputChange = event => {

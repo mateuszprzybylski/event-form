@@ -1,7 +1,7 @@
 export const ERROR_MESSAGES = {
   title: {
     valueMissing: "Title cannot be empty",
-    custom: "Title already in use"
+    customError: "Title already in use"
   },
   description: {
     valueMissing: "Description cannot be empty"

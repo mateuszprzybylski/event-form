@@ -17,7 +17,6 @@ export default class TextArea extends Input {
           placeholder={this.props.placeholder}
           required={this.props.required}
         />
-
         <div className="form-control__hint">
           Max length {this.props.maxLength} characters
           <span className="f-rigth">

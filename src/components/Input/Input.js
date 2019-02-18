@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { debounce } from "underscore";
 
 export default class Input extends Component {
   constructor(props) {
@@ -8,6 +9,8 @@ export default class Input extends Component {
       errorMessage: "",
       showErrors: false
     };
+
+    this.defaultInputClass = "form-control";
   }
 
   componentDidMount = () => {
@@ -22,18 +25,22 @@ export default class Input extends Component {
     }
 
     if (this.props.customValidation) {
-      this.props.customValidation(event).then(hasError => {
-        this.input.validity.custom = hasError;
-        this.setErrorMessage(this.input.validity);
-
-        this.setState({
-          showErrors: hasError
-        });
-      });
+      this.customValidation(event.target.value);
     }
 
     this.props.onChange(event);
   };
+
+  customValidation = debounce(value => {
+    this.props.customValidation(value).then(hasError => {
+      this.input.setCustomValidity(hasError ? ' ' : '');
+      this.setErrorMessage(this.input.validity);
+
+      this.setState({
+        showErrors: hasError
+      });
+    });
+  }, 1000);
 
   setErrorMessage = validity => {
     const errorTypes = [];
@@ -50,7 +57,11 @@ export default class Input extends Component {
   };
 
   getInputClasses = () => {
-    return this.state.showErrors ? "form-control has-errors" : "form-control";
+    const classes = [this.defaultInputClass];
+    if (this.state.showErrors) classes.push("has-errors");
+    if (this.props.className) classes.push(this.props.className);
+
+    return classes.join(" ");
   };
 
   renderHint = () => {
