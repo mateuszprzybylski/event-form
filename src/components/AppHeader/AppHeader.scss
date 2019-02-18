@@ -1,17 +1,17 @@
-@import '../../styles/utils.scss';
-@import '../../styles/variables.scss';
+@import "../../styles/utils.scss";
+@import "../../styles/variables.scss";
 
 .app-header {
-    background-color: $primary-color;
-    border-top: 10px solid darken($color: $primary-color, $amount: 15%);
-    color: $white;
-    padding: 20px 0;
+  background-color: $primary-color;
+  border-top: 10px solid darken($color: $primary-color, $amount: 15%);
+  color: $white;
+  padding: 20px 0;
 
-    h1 {
-        font-size: 1.3rem;
-        font-weight: 300;
-        margin: 0;
-        padding-left: $default-horizontal-padding;
-        padding-right: $default-horizontal-padding;
-    }
+  h1 {
+    font-size: 1.3rem;
+    font-weight: 300;
+    margin: 0;
+    padding-left: $default-horizontal-padding;
+    padding-right: $default-horizontal-padding;
+  }
 }

@@ -1,43 +1,43 @@
-@import './mixins.scss';
-@import './variables.scss';
+@import "./mixins.scss";
+@import "./variables.scss";
 
 .container {
-    box-sizing: border-box;
-    margin: 0 auto;
+  box-sizing: border-box;
+  margin: 0 auto;
 
-    @include mobile {
-        width: $mobile-min-width - $container-offset;
-    }
+  @include mobile {
+    width: $mobile-min-width - $container-offset;
+  }
 
-    @include mobile-sm {
-        width: $mobile-sm-min-width - $container-offset;
-    }
-    
-    @include mobile-md {
-        width: $mobile-md-min-width - $container-offset;
-    }
+  @include mobile-sm {
+    width: $mobile-sm-min-width - $container-offset;
+  }
 
-    @include tablet {
-        width: $tablet-min-width - $container-offset;
-    }
+  @include mobile-md {
+    width: $mobile-md-min-width - $container-offset;
+  }
 
-    @include desktop {
-        width: $tablet-min-width - $container-offset;
-    }
+  @include tablet {
+    width: $tablet-min-width - $container-offset;
+  }
+
+  @include desktop {
+    width: $tablet-min-width - $container-offset;
+  }
 }
 
 .btn-primary {
-    @include btn($primary-color, $white);
+  @include btn($primary-color, $white);
 }
 
 .btn-secondary {
-    @include btn($secondary-color, $white);
+  @include btn($secondary-color, $white);
 }
 
 .f-rigth {
-    float: right;
+  float: right;
 }
 
 .opacity-0 {
-    opacity: 0;
+  opacity: 0;
 }

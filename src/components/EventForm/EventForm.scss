@@ -1,23 +1,23 @@
-@import '../../styles/utils.scss';
-@import '../../styles/variables.scss';
-@import '../../styles/mixins.scss';
+@import "../../styles/utils.scss";
+@import "../../styles/variables.scss";
+@import "../../styles/mixins.scss";
 
 .event-form {
-    font-size: .8rem;
+  font-size: 0.8rem;
 
-    &__submit-btn {
-        display: block;
-        margin: 0 auto;
-    }
+  &__submit-btn {
+    display: block;
+    margin: 0 auto;
+  }
 }
 
 form.was-validated .form-control,
 .form-control.has-errors {
-    input:invalid, 
-    textarea:invalid, 
-    select:invalid {
-        border: 1px solid $error-color;
-    }
+  input:invalid,
+  textarea:invalid,
+  select:invalid {
+    border: 1px solid $error-color;
+  }
 
   .form-control__error {
     display: block;
@@ -25,178 +25,178 @@ form.was-validated .form-control,
 }
 
 .form-group {
+  display: flex;
+  align-items: baseline;
+
+  &-inline {
+    align-items: center;
+  }
+
+  &:not(:last-of-type) {
+    margin-bottom: 10px;
+  }
+
+  &.required {
+    label::after {
+      content: " *";
+      color: $error-color;
+    }
+  }
+
+  label {
+    flex-basis: 100px;
+    flex-shrink: 0;
+    color: $primary-color;
+    font-size: 0.8rem;
+  }
+
+  .form-control {
+    position: relative;
     display: flex;
-    align-items: baseline;
+    flex-basis: 400px;
+    flex-direction: column;
 
-    &-inline {
-        align-items: center;
+    &:not(:first-of-type) {
+      margin-left: 10px;
     }
 
-    &:not(:last-of-type) {
-        margin-bottom: 10px;
+    &__hint {
+      font-style: italic;
+      font-size: 0.7rem;
+      margin-top: 4px;
     }
 
-    &.required {
-        label::after {
-            content: ' *';
-            color: $error-color;
-        }
+    &__description {
+      margin-left: 10px;
     }
+  }
+
+  .form-control-inline {
+    flex-direction: row;
+    flex-basis: unset;
+    align-items: center;
+  }
+
+  input,
+  textarea,
+  select {
+    border: 1px solid $form-elements-color;
+    border-radius: 2px;
+    font-family: inherit;
+    padding: 10px;
+    background-color: $white;
+  }
+
+  input,
+  select {
+    height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  input[type="radio"] {
+    margin-left: 0;
+  }
+
+  select option[value=""][disabled] {
+    color: $form-elements-color;
+  }
+
+  textarea {
+    resize: none;
+  }
+
+  &.has-errors {
+    label {
+      color: $error-color;
+    }
+  }
+
+  .form-control__error {
+    display: none;
+    background-color: $error-color;
+    position: absolute;
+    color: $white;
+    font-size: 0.7rem;
+    padding: 2px 5px;
+    border-radius: 2px;
+    right: -10px;
+    top: 5px;
+    transform: translateX(100%);
+    z-index: 1;
+
+    &::before {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: $error-color;
+      transform: rotate(45deg);
+      margin-top: 2px;
+      margin-left: -7px;
+      z-index: -1;
+    }
+  }
+
+  .short input {
+    width: 70px;
+  }
+
+  .medium input {
+    width: 150px;
+  }
+
+  @include mobile-md-and-less {
+    flex-direction: column;
+    position: relative;
+    margin-bottom: 20px;
 
     label {
-        flex-basis: 100px;
-        flex-shrink: 0;
-        color: $primary-color;
-        font-size: .8rem;
+      flex-basis: unset;
+      margin-bottom: 5px;
     }
 
     .form-control {
-        position: relative;
-        display: flex;
-        flex-basis: 400px;
-        flex-direction: column;
-        
-        &:not(:first-of-type) {
-            margin-left: 10px;
-        }
-
-        &__hint {
-            font-style: italic;
-            font-size: .7rem;
-            margin-top: 4px;
-        }
-
-        &__description {
-            margin-left: 10px;
-        }
+      flex-basis: auto;
+      width: 100%;
     }
 
     .form-control-inline {
-        flex-direction: row;
-        flex-basis: unset;
-        align-items: center;
+      flex-basis: auto;
+      width: unset;
     }
 
-    input, 
-    textarea, 
-    select {
-        border: 1px solid $form-elements-color;
-        border-radius: 2px;
-        font-family: inherit;
-        padding: 10px;
-        background-color: $white;
-    }
+    &-inline {
+      flex-direction: row;
+      flex-wrap: wrap;
 
-    input, 
-    select {
-        height: 30px;
-        padding-top: 0;
-        padding-bottom: 0;
-    }
-
-    input[type="radio"] {
-        margin-left: 0;
-    }
-
-    select option[value=""][disabled] {
-        color: $form-elements-color;
-    }
-
-    textarea {
-        resize: none;
-    }
-
-    &.has-errors {
-        label {
-            color: $error-color;
-        }
+      label {
+        flex-basis: 100%;
+      }
     }
 
     .form-control__error {
-        display: none;
-        background-color: $error-color;
-        position: absolute;
-        color: $white;
-        font-size: .7rem;
-        padding: 2px 5px;
-        border-radius: 2px;
-        right: -10px;
-        top: 5px;
-        transform: translateX(100%);
-        z-index: 1;
+      position: absolute;
+      right: unset;
+      transform: unset;
+      top: calc(100% + 7px);
+      margin: 0;
+      left: 0;
+      z-index: 1;
 
-        &::before {
-            content: "";
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: $error-color;
-            transform: rotate(45deg);
-            margin-top: 2px;
-            margin-left: -7px;
-            z-index: -1;
-        }
+      &::before {
+        margin-left: 0;
+        margin-top: -5px;
+        z-index: -1;
+      }
     }
+  }
 
-    .short input {
-        width: 70px;
+  @include mobile {
+    .form-control.fee-control,
+    .form-control.time-control {
+      margin-left: 0;
+      margin-top: 5px;
     }
-
-    .medium input {
-        width: 150px;
-    }
-
-    @include mobile-md-and-less {
-        flex-direction: column;
-        position: relative;
-        margin-bottom: 20px;
-
-        label {
-            flex-basis: unset;
-            margin-bottom: 5px;
-        }
-
-        .form-control {
-            flex-basis: auto;
-            width: 100%;
-        }
-
-        .form-control-inline {
-            flex-basis: auto;
-            width: unset;
-        }
-
-        &-inline {
-            flex-direction: row;
-            flex-wrap: wrap;
-
-            label {
-                flex-basis: 100%;
-            }
-        }
-
-        .form-control__error {
-            position: absolute;
-            right: unset;
-            transform: unset;
-            top: calc(100% + 7px);
-            margin: 0;
-            left: 0;
-            z-index: 1;
-
-            &::before {
-                margin-left: 0;
-                margin-top: -5px;
-                z-index: -1;
-            }
-        }
-    }
-
-    @include mobile {
-        .form-control.fee-control,
-        .form-control.time-control {
-            margin-left: 0;
-            margin-top: 5px;
-        }
-    }
+  }
 }

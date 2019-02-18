@@ -1,7 +1,7 @@
-import React from 'react';
-import './AppHeader.scss';
+import React from "react";
+import "./AppHeader.scss";
 
-const AppHeader = ({header}) => {
+const AppHeader = ({ header }) => {
   return (
     <header className="app-header">
       <div className="container">
@@ -9,6 +9,6 @@ const AppHeader = ({header}) => {
       </div>
     </header>
   );
-}
+};
 
 export default AppHeader;
