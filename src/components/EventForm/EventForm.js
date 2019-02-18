@@ -91,6 +91,7 @@ export default class EventForm extends Component {
 
   handleSubmit = (event) => {
     if(this.form.current.reportValidity()) {
+      this.props.history.push('/success');
       console.log('Output: ', parseOutput(this.state.form));
     }
 
