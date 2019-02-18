@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import FormSection from '../FormSection/FormSection';
+import Section from '../Section/Section';
 import './EventForm.scss';
 import moment from 'moment';
 import { parseOutput, MERIDIEM_VALUES, PAID_EVENT_VALUES, getCategories, getCoordinators, getLogedInUserId, isTitleInUse } from './FormHelper';
@@ -121,7 +121,7 @@ export default class EventForm extends Component {
     return (
       <div className="event-form">
         <form ref={this.form} onSubmit={this.handleSubmit} noValidate className={this.state.wasValidated ? "was-validated" : ""}>
-          <FormSection header="About">
+          <Section header="About">
            <div className="form-group required">
             <label htmlFor="title">TITLE</label>
             <Input
@@ -209,8 +209,8 @@ export default class EventForm extends Component {
                 novalidate={true}/>
           </div>
 
-          </FormSection>
-          <FormSection header="Coordinator">
+          </Section>
+          <Section header="Coordinator">
             
            <div className="form-group required">
             <label htmlFor="responsible">RESPONSIBLE</label>
@@ -234,8 +234,8 @@ export default class EventForm extends Component {
               errorMessages={ERROR_MESSAGES.email}/>
            </div>
 
-          </FormSection>
-          <FormSection header="When">
+          </Section>
+          <Section header="When">
 
             <div className="form-group required form-group-inline">
               <label>STARTS ON</label>
@@ -292,7 +292,7 @@ export default class EventForm extends Component {
                 novalidate={true}/>
             </div>
           
-          </FormSection>
+          </Section>
           <button 
             type="submit"
             className="btn-secondary event-form__submit-btn">Publish Event</button>
