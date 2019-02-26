@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mateuszprzybylski/event-form.svg?branch=master)](https://travis-ci.org/mateuszprzybylski/event-form)
+
 [Live version](https://mateuszprzybylski.github.io/event-form)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
